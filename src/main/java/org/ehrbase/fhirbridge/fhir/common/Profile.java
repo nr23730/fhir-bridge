@@ -5,6 +5,8 @@ import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Bundle;
+
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,7 +55,11 @@ public enum Profile {
 
     // Procedure Profiles
 
-    PROCEDURE(Procedure.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure");
+    PROCEDURE(Procedure.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"),
+
+    // Bundle Profiles
+
+    BLOOD_GAS(Bundle.class, "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/blood-gas-panel");
 
     private final Class<? extends Resource> resourceType;
 
@@ -68,7 +74,8 @@ public enum Profile {
         return !(resource instanceof DiagnosticReport) &&
                 !(resource instanceof Observation) &&
                 !(resource instanceof Patient) &&
-                !(resource instanceof Procedure);
+                !(resource instanceof Procedure) &&
+                !(resource instanceof Bundle);
     }
 
     public static <T extends Resource> Collection<Profile> resolve(T resource) {

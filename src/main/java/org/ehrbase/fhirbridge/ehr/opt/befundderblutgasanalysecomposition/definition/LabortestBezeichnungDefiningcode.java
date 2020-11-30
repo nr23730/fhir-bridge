@@ -1,14 +1,14 @@
-package org.ehrbase.fhirbridge.ehr.opt.shareddefinition;
+package org.ehrbase.fhirbridge.ehr.opt.befundderblutgasanalysecomposition.definition;
 
 import java.lang.String;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 
-public enum CategoryDefiningcode implements EnumValueSet {
-  EVENT("event", "event", "openehr", "433"),
+public enum LabortestBezeichnungDefiningcode implements EnumValueSet {
+  GAS_PANEL_BLOOD("Gas panel - Blood", null, "LOINC", "24338-6"),
 
-  EPISODIC("episodic", "episodic", "openehr", "435"),
+  GAS_PANEL_CAPILLARY_BLOOD("Gas panel - Capillary blood", null, "LOINC", "24337-8"),
 
-  PERSISTENT("persistent", "persistent", "openehr", "431");
+  GAS_PANEL_ARTERIAL_BLOOD("Gas panel - Arterial blood", null, "LOINC", "24336-0");
 
   private String value;
 
@@ -18,7 +18,8 @@ public enum CategoryDefiningcode implements EnumValueSet {
 
   private String code;
 
-  CategoryDefiningcode(String value, String description, String terminologyId, String code) {
+  LabortestBezeichnungDefiningcode(String value, String description, String terminologyId,
+      String code) {
     this.value = value;
     this.description = description;
     this.terminologyId = terminologyId;

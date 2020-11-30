@@ -24,7 +24,11 @@ public enum FhirBridgeEventType implements EventType, EnumeratedCodedValue<Event
 
     CreateProcedure("fhir-create-procedure", "Create Procedure"),
 
-    FindProcedure("fhir-find-procedure", "Find Procedure");
+    FindProcedure("fhir-find-procedure", "Find Procedure"),
+
+    CreateBundle("fhir-create-bundle", "Create Bundle"),
+
+    FindBundle("fhir-find-bundle", "Find Bundle");
 
     private final EventType value;
 
