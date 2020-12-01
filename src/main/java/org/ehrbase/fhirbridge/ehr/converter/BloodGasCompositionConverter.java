@@ -3,13 +3,12 @@ package org.ehrbase.fhirbridge.ehr.converter;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConverter;
 import org.ehrbase.fhirbridge.ehr.opt.klinischefrailtyskalacomposition.KlinischeFrailtySkalaComposition;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Observation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BundleCompositionConverter implements CompositionConverter<KlinischeFrailtySkalaComposition, Bundle> {
+public class BloodGasCompositionConverter implements CompositionConverter<KlinischeFrailtySkalaComposition, Bundle> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BundleCompositionConverter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BloodGasCompositionConverter.class);
 
     @Override
     public Bundle fromComposition(KlinischeFrailtySkalaComposition composition) {

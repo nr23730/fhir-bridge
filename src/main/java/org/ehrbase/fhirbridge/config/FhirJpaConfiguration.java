@@ -27,6 +27,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.SearchParameter;
 import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -87,6 +88,14 @@ public class FhirJpaConfiguration {
         conditionReportDao.setResourceType(Condition.class);
         conditionReportDao.setContext(context);
         return conditionReportDao;
+    }
+
+    @Bean(name = "myBundleDaoR4")
+    public IFhirResourceDao<Bundle> bundleReportDao(FhirContext context) {
+        JpaResourceDao<Bundle> bundleReportDao = new JpaResourceDao<>();
+        bundleReportDao.setResourceType(Condition.class);
+        bundleReportDao.setContext(context);
+        return bundleReportDao;
     }
 
     @Bean(name = "myDiagnosticReportDaoR4")

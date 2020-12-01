@@ -8,8 +8,8 @@ import org.openehealth.ipf.commons.ihe.fhir.audit.GenericFhirAuditDataset;
 public class CreateBundleTransaction extends FhirTransactionConfiguration<GenericFhirAuditDataset> {
 
     public CreateBundleTransaction() {
-        super("fhir-create-condition",
-                "Create Condition",
+        super("fhir-create-bundle",
+                "Create Bundle",
                 false,
                 new CreateBundleAuditStrategy(false),
                 new CreateBundleAuditStrategy(true),
