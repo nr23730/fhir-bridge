@@ -3,9 +3,10 @@ package org.ehrbase.fhirbridge.fhir.bundle;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import org.openehealth.ipf.commons.ihe.fhir.FhirTransactionConfiguration;
 import org.openehealth.ipf.commons.ihe.fhir.FhirTransactionValidator;
-import org.openehealth.ipf.commons.ihe.fhir.audit.GenericFhirAuditDataset;
+import org.openehealth.ipf.commons.ihe.fhir.audit.FhirAuditDataset;
+import org.openehealth.ipf.commons.ihe.fhir.support.BatchTransactionResourceProvider;
 
-public class CreateBundleTransaction extends FhirTransactionConfiguration<GenericFhirAuditDataset> {
+public class CreateBundleTransaction extends FhirTransactionConfiguration<FhirAuditDataset> {
 
     public CreateBundleTransaction() {
         super("fhir-create-bundle",
@@ -14,7 +15,7 @@ public class CreateBundleTransaction extends FhirTransactionConfiguration<Generi
                 new CreateBundleAuditStrategy(false),
                 new CreateBundleAuditStrategy(true),
                 FhirVersionEnum.R4,
-                new CreateBundleProvider(),
+                BatchTransactionResourceProvider.getInstance(),
                 null,
                 FhirTransactionValidator.NO_VALIDATION);
     }

@@ -7,10 +7,8 @@ import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstan
 import org.ehrbase.fhirbridge.camel.processor.DefaultCreateResourceRequestValidator;
 import org.ehrbase.fhirbridge.camel.processor.DefaultExceptionHandler;
 import org.ehrbase.fhirbridge.camel.processor.PatientIdProcessor;
-import org.ehrbase.fhirbridge.ehr.converter.BloodGasCompositionConverter;
 import org.ehrbase.fhirbridge.ehr.converter.CompositionConverterResolver;
 import org.hl7.fhir.r4.model.Bundle;
-import org.springframework.context.annotation.Bean;
 
 public class BundleRoutes extends RouteBuilder {
     private final IFhirResourceDao<Bundle> bundleDao;
@@ -19,9 +17,10 @@ public class BundleRoutes extends RouteBuilder {
 
     private final PatientIdProcessor patientIdProcessor;
 
+    private final CompositionConverterResolver compositionConverterResolver;
+
     private final DefaultExceptionHandler defaultExceptionHandler;
 
-    private final CompositionConverterResolver compositionConverterResolver;
 
     public BundleRoutes(IFhirResourceDao<Bundle> bundleDao,
                         DefaultCreateResourceRequestValidator requestValidator,
@@ -49,6 +48,7 @@ public class BundleRoutes extends RouteBuilder {
                 .process(patientIdProcessor)
                 .setHeader(CompositionConstants.COMPOSITION_CONVERTER, method(compositionConverterResolver, "resolve(${header.CamelFhirBridgeProfile})"))
                 .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity")
+                // to("ehr-composition:compositionProducer?operation=mergeCompositionEntity&compositionConverter=#BloodGasCompositionConverter")
                 .setBody(header(FhirBridgeConstants.METHOD_OUTCOME));
         // @formatter:on
     }
