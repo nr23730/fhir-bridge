@@ -98,6 +98,14 @@ public class FhirJpaConfiguration {
         return diagnosticReportDao;
     }
 
+    @Bean(name = "myBundleDaoR4")
+    public IFhirResourceDao<Bundle> bundleDao(FhirContext context) {
+        JpaResourceDao<Bundle> bundleDao = new JpaResourceDao<>();
+        bundleDao.setResourceType(Bundle.class);
+        bundleDao.setContext(context);
+        return bundleDao;
+    }
+
     @Bean(name = "myObservationDaoR4")
     public IFhirResourceDao<Observation> observationDao(FhirContext context) {
         JpaResourceDao<Observation> observationDao = new JpaResourceDao<>();
