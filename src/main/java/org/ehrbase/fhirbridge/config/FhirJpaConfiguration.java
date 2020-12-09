@@ -42,22 +42,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+
 /**
  * {@link Configuration Configuration} for HAPI FHIR JPA server.
  */
 @Configuration
 @EnableConfigurationProperties(FhirJpaProperties.class)
-@Import({BaseR4Config.class})
-@EntityScan(basePackages = {
-        "ca.uhn.fhir.jpa.entity",
-        "ca.uhn.fhir.jpa.model.entity"
-})
-public class FhirJpaConfiguration {
+public class FhirJpaConfiguration extends BaseR4Config {
+
+    private final FhirJpaProperties fhirJpaProperties;
 
     private final JpaProperties jpaProperties;
 
     private final DataSource dataSource;
-
+    
     public FhirJpaConfiguration(FhirJpaProperties fhirJpaProperties, JpaProperties jpaProperties, DataSource dataSource) {
         this.fhirJpaProperties = fhirJpaProperties;
         this.jpaProperties = jpaProperties;
@@ -119,7 +117,7 @@ public class FhirJpaConfiguration {
     public IFhirResourceDao<Bundle> bundleDao(FhirContext context) {
         JpaResourceDao<Bundle> bundleDao = new JpaResourceDao<>();
         bundleDao.setResourceType(Bundle.class);
-        bundleDao.setContext(context);
+        bundleDao.setContext(fhirContext());
         return bundleDao;
     }
 

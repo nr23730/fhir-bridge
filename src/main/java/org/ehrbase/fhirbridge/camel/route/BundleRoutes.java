@@ -4,21 +4,22 @@ import ca.uhn.fhir.jpa.api.dao.IFhirResourceDao;
 import org.apache.camel.builder.RouteBuilder;
 import org.ehrbase.fhirbridge.camel.FhirBridgeConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
-import org.ehrbase.fhirbridge.camel.processor.DefaultCreateResourceRequestValidator;
 import org.ehrbase.fhirbridge.camel.processor.DefaultExceptionHandler;
 import org.ehrbase.fhirbridge.camel.processor.PatientIdProcessor;
+import org.ehrbase.fhirbridge.camel.processor.ResourceProfileValidator;
 import org.ehrbase.fhirbridge.ehr.converter.BloodGasCompositionConverter;
 import org.ehrbase.fhirbridge.ehr.converter.CompositionConverterResolver;
-import org.ehrbase.fhirbridge.ehr.converter.DiagnosticReportLabCompositionConverter;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Observation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BundleRoutes extends RouteBuilder {
+
     private final IFhirResourceDao<Bundle> bundleDao;
 
-    private final DefaultCreateResourceRequestValidator requestValidator;
+    private final ResourceProfileValidator requestValidator;
 
     private final PatientIdProcessor patientIdProcessor;
 
@@ -28,14 +29,14 @@ public class BundleRoutes extends RouteBuilder {
 
 
     public BundleRoutes(IFhirResourceDao<Bundle> bundleDao,
-                        DefaultCreateResourceRequestValidator requestValidator,
+                        ResourceProfileValidator requestValidator,
                         PatientIdProcessor patientIdProcessor,
                         CompositionConverterResolver compositionConverterResolver,
                         DefaultExceptionHandler defaultExceptionHandler) {
         this.bundleDao = bundleDao;
         this.compositionConverterResolver = compositionConverterResolver;
-        this.requestValidator = requestValidator;
         this.patientIdProcessor = patientIdProcessor;
+        this.requestValidator = requestValidator;
         this.defaultExceptionHandler = defaultExceptionHandler;
     }
 
@@ -58,8 +59,8 @@ public class BundleRoutes extends RouteBuilder {
         // @formatter:on
     }
 
- /*   @Bean
+    @Bean
     public BloodGasCompositionConverter bloodGasCompositionConverter() {
         return new BloodGasCompositionConverter();
-    }*/
+    }
 }

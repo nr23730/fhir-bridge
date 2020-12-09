@@ -1,17 +1,25 @@
 package org.ehrbase.fhirbridge.fhir.common;
 
+
+import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Bundle;
+
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Profile {
+
+    // Bundle
+    BLOOD_GAS(Bundle.class, "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/blood-gas-panel"),
 
     // Condition Profiles
 
@@ -22,10 +30,6 @@ public enum Profile {
     // DiagnosticReport Profiles
 
     DIAGNOSTIC_REPORT_LAB(DiagnosticReport.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab"),
-
-    // Patient Profiles
-
-    PATIENT(Patient.class, "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/Patient"),
 
     // Observation Profiles
 
@@ -63,11 +67,7 @@ public enum Profile {
 
     // Procedure Profiles
 
-    PROCEDURE(Procedure.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"),
-
-    // Bundle Profiles
-
-    BLOOD_GAS(Bundle.class, "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/blood-gas-panel");
+    PROCEDURE(Procedure.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure");
 
     private final Class<? extends Resource> resourceType;
 
@@ -130,3 +130,4 @@ public enum Profile {
         return uri;
     }
 }
+
