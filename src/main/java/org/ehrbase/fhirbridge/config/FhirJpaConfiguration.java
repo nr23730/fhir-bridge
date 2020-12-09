@@ -29,14 +29,18 @@ import org.hl7.fhir.r4.model.SearchParameter;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 /**
  * {@link Configuration Configuration} for HAPI FHIR JPA server.
@@ -50,10 +54,14 @@ import javax.persistence.EntityManagerFactory;
 })
 public class FhirJpaConfiguration {
 
-    private final FhirJpaProperties properties;
+    private final JpaProperties jpaProperties;
 
-    public FhirJpaConfiguration(FhirJpaProperties properties) {
-        this.properties = properties;
+    private final DataSource dataSource;
+
+    public FhirJpaConfiguration(FhirJpaProperties fhirJpaProperties, JpaProperties jpaProperties, DataSource dataSource) {
+        this.fhirJpaProperties = fhirJpaProperties;
+        this.jpaProperties = jpaProperties;
+        this.dataSource = dataSource;
     }
 
     @Bean
@@ -64,7 +72,7 @@ public class FhirJpaConfiguration {
     @Bean
     public ModelConfig modelConfig() {
         ModelConfig config = new ModelConfig();
-        config.setAllowExternalReferences(properties.isAllowExternalReferences());
+        config.setAllowExternalReferences(fhirJpaProperties.isAllowExternalReferences());
         return config;
     }
 
@@ -73,28 +81,37 @@ public class FhirJpaConfiguration {
         return new PartitionSettings();
     }
 
-    // TODO: Check SimpleBatchConfiguration
+    @Bean
+    @Override
+    protected LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = super.entityManagerFactory();
+        entityManagerFactory.setPersistenceUnitName("HAPI_PU");
+        entityManagerFactory.setDataSource(dataSource);
+        entityManagerFactory.setJpaPropertyMap(jpaProperties.getProperties());
+        return entityManagerFactory;
+    }
+
     @Primary
-    @Bean(name = "hapiTransactionManager")
-    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    @Bean
+    public PlatformTransactionManager hapiTransactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
     }
 
     @Bean(name = "myConditionDaoR4")
-    public IFhirResourceDao<Condition> conditionReportDao(FhirContext context) {
+    public IFhirResourceDao<Condition> conditionReportDao() {
         JpaResourceDao<Condition> conditionReportDao = new JpaResourceDao<>();
         conditionReportDao.setResourceType(Condition.class);
-        conditionReportDao.setContext(context);
+        conditionReportDao.setContext(fhirContext());
         return conditionReportDao;
     }
 
     @Bean(name = "myDiagnosticReportDaoR4")
-    public IFhirResourceDao<DiagnosticReport> diagnosticReportDao(FhirContext context) {
+    public IFhirResourceDao<DiagnosticReport> diagnosticReportDao() {
         JpaResourceDao<DiagnosticReport> diagnosticReportDao = new JpaResourceDao<>();
         diagnosticReportDao.setResourceType(DiagnosticReport.class);
-        diagnosticReportDao.setContext(context);
+        diagnosticReportDao.setContext(fhirContext());
         return diagnosticReportDao;
     }
 
@@ -107,66 +124,66 @@ public class FhirJpaConfiguration {
     }
 
     @Bean(name = "myObservationDaoR4")
-    public IFhirResourceDao<Observation> observationDao(FhirContext context) {
+    public IFhirResourceDao<Observation> observationDao() {
         JpaResourceDao<Observation> observationDao = new JpaResourceDao<>();
         observationDao.setResourceType(Observation.class);
-        observationDao.setContext(context);
+        observationDao.setContext(fhirContext());
         return observationDao;
     }
 
     @Bean(name = "myProcedureDaoR4")
-    public IFhirResourceDao<Procedure> procedureDao(FhirContext context) {
+    public IFhirResourceDao<Procedure> procedureDao() {
         JpaResourceDao<Procedure> procedureDao = new JpaResourceDao<>();
         procedureDao.setResourceType(Procedure.class);
-        procedureDao.setContext(context);
+        procedureDao.setContext(fhirContext());
         return procedureDao;
     }
 
     @Bean(name = "myAuditEventDaoR4")
-    public IFhirResourceDao<AuditEvent> auditEventDao(FhirContext context) {
+    public IFhirResourceDao<AuditEvent> auditEventDao() {
         JpaResourceDao<AuditEvent> auditEventDao = new JpaResourceDao<>();
         auditEventDao.setResourceType(AuditEvent.class);
-        auditEventDao.setContext(context);
+        auditEventDao.setContext(fhirContext());
         return auditEventDao;
     }
 
     @Bean(name = "myPatientDaoR4")
-    public IFhirResourceDao<Patient> patientDao(FhirContext context) {
+    public IFhirResourceDao<Patient> patientDao() {
         JpaResourceDao<Patient> patientDao = new JpaResourceDao<>();
         patientDao.setResourceType(Patient.class);
-        patientDao.setContext(context);
+        patientDao.setContext(fhirContext());
         return patientDao;
     }
 
     @Bean(name = "myCodeSystemDaoR4")
-    public IFhirResourceDaoCodeSystem<CodeSystem, Coding, CodeableConcept> codeSystemDao(FhirContext context) {
+    public IFhirResourceDaoCodeSystem<CodeSystem, Coding, CodeableConcept> codeSystemDao() {
         FhirResourceDaoCodeSystemR4 codeSystemDao = new FhirResourceDaoCodeSystemR4();
         codeSystemDao.setResourceType(CodeSystem.class);
-        codeSystemDao.setContext(context);
+        codeSystemDao.setContext(fhirContext());
         return codeSystemDao;
     }
 
     @Bean(name = "myValueSetDaoR4")
-    public IFhirResourceDaoValueSet<ValueSet, Coding, CodeableConcept> valueSetDao(FhirContext context) {
+    public IFhirResourceDaoValueSet<ValueSet, Coding, CodeableConcept> valueSetDao() {
         FhirResourceDaoValueSetR4 valueSetDao = new FhirResourceDaoValueSetR4();
         valueSetDao.setResourceType(ValueSet.class);
-        valueSetDao.setContext(context);
+        valueSetDao.setContext(fhirContext());
         return valueSetDao;
     }
 
     @Bean(name = "myConceptMapDaoR4")
-    public IFhirResourceDaoConceptMap<ConceptMap> conceptMapDao(FhirContext context) {
+    public IFhirResourceDaoConceptMap<ConceptMap> conceptMapDao() {
         FhirResourceDaoConceptMapR4 conceptMapDao = new FhirResourceDaoConceptMapR4();
         conceptMapDao.setResourceType(ConceptMap.class);
-        conceptMapDao.setContext(context);
+        conceptMapDao.setContext(fhirContext());
         return conceptMapDao;
     }
 
     @Bean(name = "mySearchParameterDaoR4")
-    public IFhirResourceDaoSearchParameter<SearchParameter> searchParameterDao(FhirContext context) {
+    public IFhirResourceDaoSearchParameter<SearchParameter> searchParameterDao() {
         FhirResourceDaoSearchParameterR4 searchParameterDao = new FhirResourceDaoSearchParameterR4();
         searchParameterDao.setResourceType(SearchParameter.class);
-        searchParameterDao.setContext(context);
+        searchParameterDao.setContext(fhirContext());
         return searchParameterDao;
     }
 }

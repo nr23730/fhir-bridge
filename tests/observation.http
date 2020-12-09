@@ -22,6 +22,7 @@
 POST {{ehrbase_url}}/ehr HTTP/1.1
 content-type: application/json
 Prefer: return=representation
+# Authorization: Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=
 
 {
   "_type": "EHR_STATUS",
@@ -54,6 +55,7 @@ Prefer: return=representation
 
 POST {{base_url}}/Observation
 Content-Type: application/json
+# Authorization: Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=
 
 # expected: 201
 
@@ -61,12 +63,6 @@ Content-Type: application/json
 {
   "resourceType": "Observation",
   "id": "blood-pressure",
-  "subject": {
-    "identifier": {
-      "system": "urn:ietf:rfc:4122",
-      "value": "{{subject_id}}"
-    }
-  },
   "meta": {
     "profile": [
       "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/blood-pressure"
@@ -107,6 +103,12 @@ Content-Type: application/json
       }
     ],
     "text": "Blood pressure systolic & diastolic"
+  },
+  "subject": {
+    "identifier": {
+      "system": "urn:ietf:rfc:4122",
+      "value": "{{subject_id}}"
+    }
   },
   "effectiveDateTime": "2012-09-17",
   "performer": [

@@ -29,6 +29,7 @@
 #
 # [ VALIDATION KEYWORDS ] 
 
+
 validate response - 201
     Integer    response status    201
 
@@ -59,7 +60,7 @@ validate response - 422 (profile not supported)
 
     String     response body resourceType    OperationOutcome
     String     response body issue 0 diagnostics
-    ...        pattern=Profile http://hl7.org/fhir/StructureDefinition/vitalsigns is not supported for Observation. One of the following profiles is expected:
+    ...        pattern=The resource does not contain any supported profile. One of the following profiles is expected:
 
 
 validate response - 422 (with error message)
@@ -84,7 +85,7 @@ validate response - 422 (with error message)
 
 
 get body temperature
-    &{resp}             GET    ${BASE_URL}/Observation?identifier=${subject_id}&_profile=http://hl7.org/fhir/StructureDefinition/bodytemp
+    &{resp}             GET    ${BASE_URL}/Observation?subject.identifier=${subject_id}&_profile=http://hl7.org/fhir/StructureDefinition/bodytemp
                         Integer    response status    200
                         String     request method    GET
                         String     response body id
@@ -94,7 +95,7 @@ get body temperature
 
 
 get observation lab
-    &{resp}             GET    ${BASE_URL}/Observation?identifier=${subject_id}&_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab
+    &{resp}             GET    ${BASE_URL}/Observation?subject.identifier=${subject_id}&_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab
                         Integer    response status    200
                         String     request method    GET
                         String     response body id
@@ -104,14 +105,13 @@ get observation lab
 
 
 get coronavirus lab results
-    &{resp}             GET    ${BASE_URL}/Observation?identifier=${subject_id}&_profile=https://charite.infectioncontrol.de/fhir/core/StructureDefinition/CoronavirusNachweisTest
+    &{resp}             GET    ${BASE_URL}/Observation?subject.identifier=${subject_id}&_profile=https://charite.infectioncontrol.de/fhir/core/StructureDefinition/CoronavirusNachweisTest
                         Integer    response status    200
                         String     request method    GET
                         String     response body id
                         String     response body resourceType    Bundle
                         String     response body entry 0 resource resourceType    Observation
                         Output Debug Info To Console
-
 
 
 #                                            .
@@ -180,6 +180,21 @@ create frailty scale score
     POST /Observation with ehr reference    Frailty Scale Score    ${example_json}
 
 
+create smoking status
+    [Arguments]         ${example_json}
+    POST /Observation with ehr reference    Smoking Status    ${example_json}
+
+
+create body weight
+    [Arguments]         ${example_json}
+    POST /Observation with ehr reference    Body Weight    ${example_json}
+
+
+create patient in icu
+    [Arguments]         ${example_json}
+    POST /Observation with ehr reference    Patient in Intensive Care Unit (ICU)    ${example_json}
+
+
 # # [ FAIL CREATING ]
 # create blood pressure without ehr reference
 #     [Arguments]         ${example_json}
@@ -187,7 +202,17 @@ create frailty scale score
 #     POST /Observation w/o ehr reference    Blood Pressure    ${example_json}
 
 
-
+#                                   .                    
+#                                 .o8                    
+# oo.ooooo.   .ooooo.   .oooo.o .o888oo                  
+#  888' `88b d88' `88b d88(  "8   888                    
+#  888   888 888   888 `"Y88b.    888                    
+#  888   888 888   888 o.  )88b   888 .                  
+#  888bod8P' `Y8bod8P' 8""888P'   "888"                  
+#  888                                                   
+# o888o                                                  
+#
+# [ VALIDATE POST RESPONSES ]
 
 
 # MAIN HTTP METHOD AND ENDPOINT
@@ -228,34 +253,3 @@ POST /Observation w/o ehr reference
                         Delete Object From Json    ${payload}    $.subject
                         Output Debug Info To Console    ${payload}
                         POST /Observation    ${fhir_resource_name}    ${payload}
-
-
-create Observation Heart Rate JSON
-    [Arguments]         ${resourceType}    ${ID}    ${meta}    ${profile}    ${status}     ${Identifieravailable}
-    ...                 ${Identifiercodingsystem}    ${Identifiercodingcode}    ${Identifiersystem}
-    ...                 ${Identifiervalue}    ${Identifierassigner}    ${Identifierreference}
-    ...                 ${categoryavailable}    ${categorycodingavailable}    ${categorysystem}    ${categorycode}
-    ...                 ${codeavailable}    ${codecodingavailable}    ${code0system}    ${code0code}    ${code0display}
-    ...                 ${code1system}    ${code1code}    ${code1display}    ${codetext}    ${subject}    ${reference}
-    ...                 ${effectivedatetime}    ${vQavailable}    ${vQvalue}    ${vQunit}    ${vQsystem}    ${vQcode}
-    ...                 ${dataabsentreason}    ${responsecode}    ${diagnosticINDEX}    ${diagnosticsENG}    ${diagnosticsDE}
-
-                        prepare new request session    Prefer=return=representation
-
-    &{resp}             Run Keywords
-                        ...    ehr.create new ehr               000_ehr_status.json                             AND
-                        ...    load JSON                        observation-example-heart-rate-robot.json       AND
-                        ...    update Resource Type             ${resourceType}                                 AND
-                        ...    update ID                        ${ID}                                           AND
-                        ...    update Meta Profile              ${meta}                                         ${profile}                     AND
-                        ...    update Status                    ${status}                                       AND
-                        ...    update Identifier                ${Identifieravailable}                          ${Identifiercodingsystem}      ${Identifiercodingcode}     ${Identifiersystem}     ${Identifiervalue}      ${Identifierassigner}    ${Identifierreference}    AND
-                        ...    update Category                  ${categoryavailable}                            ${categorycodingavailable}     ${categorysystem}           ${categorycode}         AND
-                        ...    update Code                      ${codeavailable}                                ${codecodingavailable}         ${code0system}              ${code0code}            ${code0display}         ${code1system}           ${code1code}             ${code1display}    ${codetext}    AND
-                        ...    update Subject                   ${subject}                                      ${reference}                   AND
-                        ...    update Effective Date Time       ${effectivedatetime}                            AND
-                        ...    update Value Quantity            ${vQavailable}                                  ${vQvalue}                     ${vQunit}                   ${vQsystem}            ${vQcode}                AND
-                        ...    update Data Absent Reason        ${dataabsentreason}                             AND
-                        ...    POST    ${BASE_URL}/Observation    body=${payload}                               AND
-                        ...    Output Debug Info To Console                                                     AND
-                        ...    validation JSON                  ${responsecode}                                 ${diagnosticINDEX}             ${diagnosticsENG}           ${diagnosticsDE}
