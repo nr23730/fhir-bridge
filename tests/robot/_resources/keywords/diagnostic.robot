@@ -51,7 +51,8 @@ validate response - 422 (profile not supported)
     Integer    response status    422
 
     String     $.issue[0].diagnostics 
-    ...        pattern=not supported for DiagnosticReport
+    ...        pattern=One of the following profiles is expected:
+
 
 
 #                                            .
@@ -68,6 +69,12 @@ validate response - 422 (profile not supported)
 create diagnostic report
     [Arguments]         ${example_json}
     POST /Diagnostic with ehr reference    Diagnostic Report    ${example_json}
+
+
+create diagnostic report radiology
+    [Arguments]         ${example_json}
+    POST /Diagnostic with ehr reference    Diagnostic Report Radiology    ${example_json}
+
 
 
 #                                   .                    

@@ -21,6 +21,7 @@
 Resource                ${EXECDIR}/robot/_resources/suite_settings.robot
 
 Test Setup              generic.prepare new request session    Prefer=return=representation
+...															   Authorization=Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=
 
 Force Tags              create
 
@@ -35,9 +36,10 @@ Force Tags              create
 001 Create Procedure
 	[Documentation]    1. create EHR
 	...                2. trigger observation endpoint
+	[Tags]             valid
 
 	ehr.create new ehr    000_ehr_status.json
-	procedure.create procedure    create.json
+	procedure.create procedure    create-procedure.json
     procedure.validate response - 201
 
 
