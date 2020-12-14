@@ -23,6 +23,8 @@ public class CompositionConverterResolver implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        //Bundle
+        profiles.put(Profile.BLOOD_GAS, new BloodGasCompositionConverter());
         // Conditions
         profiles.put(Profile.DEFAULT_CONDITION, new DiagnoseCompositionConverter());
         profiles.put(Profile.SYMPTOMS_COVID_19, new SymptomCompositionConverter());
@@ -43,6 +45,5 @@ public class CompositionConverterResolver implements InitializingBean {
         profiles.put(Profile.SOFA_SCORE, new SofaScoreCompositionConverter());
         profiles.put(Profile.SMOKING_STATUS, new SmokingStatusCompositionConverter());
         profiles.put(Profile.PROCEDURE, new ProcedureCompositionConverter());
-        profiles.put(Profile.BLOOD_GAS, new BloodGasCompositionConverter());
     }
 }

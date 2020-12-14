@@ -15,7 +15,8 @@ public class CreateBundleTransaction extends FhirTransactionConfiguration<FhirAu
                 new CreateBundleAuditStrategy(false),
                 new CreateBundleAuditStrategy(true),
                 FhirVersionEnum.R4,
-                BatchTransactionResourceProvider.getInstance(),
+              //  BatchTransactionResourceProvider.getInstance(),
+                new CreateBundleProvider(),
                 null,
                 FhirTransactionValidator.NO_VALIDATION);
     }
