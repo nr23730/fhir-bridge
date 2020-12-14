@@ -4,7 +4,16 @@ target
 
 *-local.yml
 
+# Python
+venv
+*.venv
 .pytest_cache
 
 # Robot Tests
 **results**
+
+VSCode
+.classpath
+.factorypath
+.project
+.settings/

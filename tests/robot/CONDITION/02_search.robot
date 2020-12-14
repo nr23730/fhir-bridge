@@ -32,13 +32,15 @@ Force Tags              search
 *** Test Cases ***
 001 Search Diagnose Condition
     [Documentation]     Search Diagnose Condition
+    [Tags]              diagnose-condition    valid
 
-    condition.create diagnose condition    create-default.json
+    condition.create diagnose condition    create-condition-default.json
     condition.get diagnose condition
 
 
 
 *** Keywords ***
 establish preconditions
-    generic.prepare new request session    Prefer=return=representation
+    generic.prepare new request session     Prefer=return=representation
+    ...									    Authorization=Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=
     ehr.create new ehr    000_ehr_status.json

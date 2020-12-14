@@ -21,6 +21,7 @@
 Resource                ${EXECDIR}/robot/_resources/suite_settings.robot
 
 Test Setup              generic.prepare new request session    Prefer=return=representation
+...															   Authorization=Basic bXl1c2VyOm15UGFzc3dvcmQ0MzI=
 
 Force Tags              create
 
@@ -34,12 +35,9 @@ Force Tags              create
 *** Test Cases ***
 001 Create Questionnaire Response
     [Documentation]     1. trigger QuestionaireResponse endpoint
-    [Tags]              not-ready
+    [Tags]              questionnaire-response    valid
 
-    # comment: # CREATING EHR IS NOT REQUIRED YET
-    # ehr.create new ehr    000_ehr_status.json
 
+    ehr.create new ehr    000_ehr_status.json
     questionnaire.create questionnaire response    create-covapp-response.json
     questionnaire.validate response - 201
-
-

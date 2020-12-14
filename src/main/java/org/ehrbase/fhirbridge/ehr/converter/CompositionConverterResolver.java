@@ -1,6 +1,7 @@
 package org.ehrbase.fhirbridge.ehr.converter;
 
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConverter;
+import org.ehrbase.fhirbridge.ehr.opt.kontaktpersoncovid19composition.definition.SarsCov2ExpositionEvaluation;
 import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -43,5 +44,6 @@ public class CompositionConverterResolver implements InitializingBean {
         profiles.put(Profile.SOFA_SCORE, new SofaScoreCompositionConverter());
         profiles.put(Profile.SMOKING_STATUS, new SmokingStatusCompositionConverter());
         profiles.put(Profile.PROCEDURE, new ProcedureCompositionConverter());
+        profiles.put(Profile.SARS_COV2_EXPOSURE, new
     }
 }
