@@ -5,16 +5,13 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.FhirBridgeConstants;
-import org.ehrbase.fhirbridge.camel.processor.validator.bundle.BundleProfileValidator;
 import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.ehrbase.fhirbridge.fhir.util.ResourceUtils;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueType;
 import org.hl7.fhir.r4.model.OperationOutcome.OperationOutcomeIssueComponent;
 import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -47,12 +44,8 @@ public class ResourceProfileValidator implements Processor, MessageSourceAware {
         OperationOutcome operationOutcome = new OperationOutcome();
         Class<? extends Resource> resourceType = resource.getClass();
 
-
         List<String> profiles = ResourceUtils.getProfiles(resource);
-      if(resource.getResourceType() == ResourceType.Bundle) {
-          BundleProfileValidator bundleProfileValidator = new BundleProfileValidator();
-          bundleProfileValidator.validate(operationOutcome, messages, (Bundle) resource, fhirContext, exchange);
-      } else if (profiles.isEmpty() && resource.getResourceType() != ResourceType.Bundle) {
+        if (profiles.isEmpty()) {
             Profile defaultProfile = Profile.getDefaultProfile(resourceType);
             if (defaultProfile == null) {
                 operationOutcome.addIssue(new OperationOutcomeIssueComponent()
@@ -64,7 +57,7 @@ public class ResourceProfileValidator implements Processor, MessageSourceAware {
             }
 
             exchange.getMessage().setHeader(FhirBridgeConstants.PROFILE, defaultProfile);
-        }  else {
+        } else {
             Set<Profile> supportedProfiles = Profile.resolveAll(resource);
             if (supportedProfiles.isEmpty()) {
                 operationOutcome.addIssue(new OperationOutcomeIssueComponent()

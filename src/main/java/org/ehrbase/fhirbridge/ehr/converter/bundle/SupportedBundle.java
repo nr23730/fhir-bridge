@@ -1,10 +1,9 @@
-package org.ehrbase.fhirbridge.camel.processor.validator.bundle;
+package org.ehrbase.fhirbridge.ehr.converter.bundle;
 
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-import org.ehrbase.client.openehrclient.VersionUid;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Observation;
-
+import org.hl7.fhir.r4.model.Resource;
 
 
 public abstract class SupportedBundle extends Bundle {
@@ -14,9 +13,9 @@ public abstract class SupportedBundle extends Bundle {
         this.bundle = bundle;
     }
 
-    public abstract MappedBundleComposition processBundle();
-
-    public abstract void createdLog(VersionUid versionUid);
+    public Resource getOriginalBundle(){
+        return bundle;
+    }
 
     String getEhrUID() {
         String ehrUID = "";
@@ -24,7 +23,6 @@ public abstract class SupportedBundle extends Bundle {
             checkIfPatientRessourceNotPresent(bundleEntry);
             Observation observation = (Observation) bundleEntry.getResource();
             ehrUID = getEntryEhrUID(ehrUID, observation);
-
         }
         return ehrUID;
     }

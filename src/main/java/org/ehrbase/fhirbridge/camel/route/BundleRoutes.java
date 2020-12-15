@@ -7,11 +7,10 @@ import org.ehrbase.fhirbridge.camel.FhirBridgeConstants;
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConstants;
 import org.ehrbase.fhirbridge.camel.processor.DefaultExceptionHandler;
 import org.ehrbase.fhirbridge.camel.processor.PatientIdProcessor;
-import org.ehrbase.fhirbridge.camel.processor.validator.ResourceProfileValidator;
+import org.ehrbase.fhirbridge.camel.processor.validator.BundleProfileValidator;
 import org.ehrbase.fhirbridge.ehr.converter.BloodGasCompositionConverter;
 import org.ehrbase.fhirbridge.ehr.converter.CompositionConverterResolver;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Observation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,7 @@ public class BundleRoutes extends RouteBuilder {
 
     private final IFhirResourceDao<Bundle> bundleDao;
 
-    private final ResourceProfileValidator requestValidator;
+    private final BundleProfileValidator requestValidator;
 
     private final PatientIdProcessor patientIdProcessor;
 
@@ -30,7 +29,7 @@ public class BundleRoutes extends RouteBuilder {
 
 
     public BundleRoutes(IFhirResourceDao<Bundle> bundleDao,
-                        ResourceProfileValidator requestValidator,
+                        BundleProfileValidator requestValidator,
                         PatientIdProcessor patientIdProcessor,
                         CompositionConverterResolver compositionConverterResolver,
                         DefaultExceptionHandler defaultExceptionHandler) {
@@ -49,7 +48,7 @@ public class BundleRoutes extends RouteBuilder {
                 .process(defaultExceptionHandler)
                 .end()
                 .process(requestValidator)
-                .bean(bundleDao, "create(${body})")
+               // .bean(bundleDao, "create(${body})")
                 .setHeader(FhirBridgeConstants.METHOD_OUTCOME, body())
                 .setBody(simple("${body.resource}"))
                 .process(patientIdProcessor)

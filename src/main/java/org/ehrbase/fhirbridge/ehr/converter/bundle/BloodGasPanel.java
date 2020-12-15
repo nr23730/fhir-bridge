@@ -1,16 +1,16 @@
-package org.ehrbase.fhirbridge.camel.processor.validator.bundle;
+package org.ehrbase.fhirbridge.ehr.converter.bundle;
 
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.fhirbridge.ehr.opt.befundderblutgasanalysecomposition.BefundDerBlutgasanalyseComposition;
+import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Resource;
 
 import java.util.Optional;
 
-public class BloodGasPanelBundle extends SupportedBundle {
+public class BloodGasPanel extends SupportedBundle {
     private static final String bloodGasUrl = "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/blood-gas-panel";
     private static final String pHUrl = "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/pH";
     private static final String carbonDioxidePartialPressureUrl = "https://www.netzwerk-universitaetsmedizin.de/fhir/StructureDefinition/carbon-dioxide-partial-pressure";
@@ -30,22 +30,15 @@ public class BloodGasPanelBundle extends SupportedBundle {
     private int oxygenSaturationProfilesContained = 0;
 
 
-    public BloodGasPanelBundle(Bundle bundle) {
+    public BloodGasPanel(Bundle bundle) {
         super(bundle);
+    }
+
+    public void processBundle(){
         setObservations();
     }
 
-    @Override
-    public MappedBundleComposition processBundle() {
-   //     SupportedBundle.logger.info(">>>>>>>>>>>>>>>>>> BLOOD GAS PANEL");
-        String ehrUid = getEhrUID();
-        return new MappedBundleComposition( new BefundDerBlutgasanalyseComposition(), ehrUid);
-     //   return new MappedBundleComposition( new FHIRObservationBloodGasOpenehrBlutgasAnalyse().map(this), ehrUid);
-    }
-
-    @Override
-    public void createdLog(VersionUid versionUid) {
-     //   SupportedBundle.logger.info("Composition created with UID {} for FHIR profile {}", versionUid, Profile.BLOOD_GAS);
+    private void setOriginalBundle() {
     }
 
     private void setObservations() {
@@ -83,7 +76,6 @@ public class BloodGasPanelBundle extends SupportedBundle {
             throw new UnprocessableEntityException("Make sure only the for Blood Gas Panel supported Profiles are contained in the Bundle these are: blood gas panel, oxygen saturation, carbon dioxide saturation, ph, oxygen partaial pressure");
         }
     }
-
 
     private void checkIfObservationsComplete() {
         if (!checkIfOneProfileIsPresent()) {
@@ -164,5 +156,6 @@ public class BloodGasPanelBundle extends SupportedBundle {
     public Optional<Observation> getOxygenSaturation() {
         return oxygenSaturation;
     }
+
 
 }
