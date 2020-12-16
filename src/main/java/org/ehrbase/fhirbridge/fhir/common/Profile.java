@@ -94,10 +94,23 @@ public enum Profile {
     }
 
     public static Set<Profile> resolveAll(Resource resource) {
+        if(resource.getClass() == Bundle.class){
+            return resolveAllBundle((Bundle) resource);
+        }
         return resource.getMeta().getProfile().stream()
                 .map(uri -> Profile.resolve(resource.getClass(), uri.getValue()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private static Set<Profile> resolveAllBundle(Bundle bundle) {
+       return bundle.getEntry()
+                .stream()
+                .map(resource -> resource.getResource().getMeta().getProfile().get(0))
+                .map(uri -> Profile.resolve(Bundle.class, uri.getValue()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableSet());
+
     }
 
     public static <T extends Resource> Profile resolve(Class<T> resourceType, String uri) {

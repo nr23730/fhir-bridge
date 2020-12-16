@@ -52,8 +52,7 @@ public class ObservationRoutes extends RouteBuilder {
             .setBody(simple("${body.resource}"))
             .process(patientIdProcessor)
             .setHeader(CompositionConstants.COMPOSITION_CONVERTER, method(compositionConverterResolver, "resolve(${header.CamelFhirBridgeProfile})"))
-            .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity")
-            .setBody(header(FhirBridgeConstants.METHOD_OUTCOME));
+            .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity");
         // @formatter:on
     }
 }

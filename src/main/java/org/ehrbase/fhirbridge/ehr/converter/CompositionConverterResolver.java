@@ -1,6 +1,7 @@
 package org.ehrbase.fhirbridge.ehr.converter;
 
 import org.ehrbase.fhirbridge.camel.component.ehr.composition.CompositionConverter;
+import org.ehrbase.fhirbridge.ehr.converter.bloodgas.BloodGasCompositionConverter;
 import org.ehrbase.fhirbridge.fhir.common.Profile;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ public class CompositionConverterResolver implements InitializingBean {
 
     @SuppressWarnings("java:S1452")
     public CompositionConverter<?, ?> resolve(Profile profile) {
+
         CompositionConverter<?, ?> compositionConverter = profiles.get(profile);
         if (compositionConverter == null) {
             throw new IllegalArgumentException("No CompositionConverter defines for profile '" + profile + "'");

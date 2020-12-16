@@ -2,6 +2,7 @@ package org.ehrbase.fhirbridge.camel.processor.validator;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import liquibase.pro.packaged.S;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.fhirbridge.camel.FhirBridgeConstants;
@@ -78,8 +79,7 @@ public class BundleProfileValidator implements Processor, MessageSourceAware {
         if (operationOutcome.hasIssue()) {
             throw new UnprocessableEntityException(fhirContext, operationOutcome);
         }
-        //Add this in the future when more Bundles are supported: exchange.getMessage().setHeader(FhirBridgeConstants.PROFILE, supportedProfiles.iterator().next());
-        exchange.getMessage().setHeader(FhirBridgeConstants.PROFILE, supportedProfiles);
+        exchange.getMessage().setHeader(FhirBridgeConstants.PROFILE, supportedProfiles.iterator().next());
         exchange.getMessage().setHeader("Bundle", supportedBundle);
 
     }

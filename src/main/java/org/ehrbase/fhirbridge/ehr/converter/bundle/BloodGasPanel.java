@@ -32,14 +32,9 @@ public class BloodGasPanel extends SupportedBundle {
 
     public BloodGasPanel(Bundle bundle) {
         super(bundle);
-    }
-
-    public void processBundle(){
         setObservations();
     }
 
-    private void setOriginalBundle() {
-    }
 
     private void setObservations() {
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {

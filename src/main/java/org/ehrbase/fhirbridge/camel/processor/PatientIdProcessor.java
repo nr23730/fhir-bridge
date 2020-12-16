@@ -2,7 +2,6 @@ package org.ehrbase.fhirbridge.camel.processor;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import liquibase.pro.packaged.S;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.ehrbase.client.aql.parameter.ParameterValue;
@@ -49,26 +48,26 @@ public class PatientIdProcessor implements Processor, MessageSourceAware {
 
     @Override
     public void process(Exchange exchange) {
-        Resource resource = exchange.getIn().getBody(Resource.class);
-
-        if(exchange.getIn().getBody(Resource.class) == null){
-            resource = ((SupportedBundle) exchange.getIn().getHeader("Bundle")).getOriginalBundle();
-        }
+        Resource resource = getResource(exchange);
 
         String patientId = extractPatientId(resource);
         Query<Record1<UUID>> query = Query.buildNativeQuery("select e/ehr_id/value from ehr e where e/ehr_status/subject/external_ref/id/value = $patientId", UUID.class);
         List<Record1<UUID>> result = openEhrClient.aqlEndpoint()
                 .execute(query, new ParameterValue<>("patientId", patientId));
         if (result.isEmpty()) {
-            throw new UnprocessableEntityException(fhirContext, new OperationOutcome()
-                    .addIssue(new OperationOutcomeIssueComponent()
-                            .setSeverity(IssueSeverity.ERROR)
-                            .setCode(IssueType.VALUE)
-                            .setDiagnostics(messages.getMessage("validation.subject.ehrIdNotFound", new Object[]{patientId}))
-                            .addExpression(resource.getResourceType() + ".subject.identifier")));
+            throwEhrNotFound(resource, patientId);
         }
-
         exchange.getIn().setHeader(CompositionConstants.EHR_ID, result.get(0).value1());
+    }
+
+
+    private Resource getResource(Exchange exchange) {
+        Resource resource = exchange.getIn().getBody(Resource.class);
+        if (resource == null) {
+            resource = ((SupportedBundle) exchange.getIn().getHeader("Bundle")).getOriginalBundle();
+            exchange.getIn().setBody(resource);
+        }
+        return resource;
     }
 
     private String extractPatientId(Resource resource) {
@@ -101,15 +100,11 @@ public class PatientIdProcessor implements Processor, MessageSourceAware {
         }
 
         if (patientId == null) {
-            throw new UnprocessableEntityException(fhirContext, new OperationOutcome()
-                    .addIssue(new OperationOutcomeIssueComponent()
-                            .setSeverity(IssueSeverity.ERROR)
-                            .setCode(IssueType.VALUE)
-                            .setDiagnostics(messages.getMessage("validation.subject.identifierRequired"))
-                            .addExpression(resourceType + ".subject.identifier")));
+            throwIdentifierRequired(resourceType);
         }
         return patientId;
     }
+
 
     private String getBundlePatientId(Bundle bundle, ResourceType resourceType) {
         List<String> patientIds = bundle.getEntry()
@@ -120,26 +115,47 @@ public class PatientIdProcessor implements Processor, MessageSourceAware {
 
         checkPatientIdsIdentical(patientIds, resourceType);
 
-        System.out.println(patientIds);
         return patientIds.get(0);
     }
 
     private void checkPatientIdsIdentical(List<String> patientIds, ResourceType resourceType) {
         for (String id : patientIds) {
-            if (!id.equals(patientIds.get(0))){
-                throw new UnprocessableEntityException(fhirContext, new OperationOutcome()
-                        .addIssue(new OperationOutcomeIssueComponent()
-                                .setSeverity(IssueSeverity.ERROR)
-                                .setCode(IssueType.VALUE)
-                                .setDiagnostics(messages.getMessage("validation.bundle.PatientIdsNotIdentical", new Object[]{id}))
-                                .addExpression(resourceType + ".entry[].subject.identifier.value")));
+            if (!id.equals(patientIds.get(0))) {
+                throwPatientIdsUnidentical(resourceType, id);
             }
         }
     }
 
+    private void throwPatientIdsUnidentical(ResourceType resourceType, String id) {
+        throw new UnprocessableEntityException(fhirContext, new OperationOutcome()
+                .addIssue(new OperationOutcomeIssueComponent()
+                        .setSeverity(IssueSeverity.ERROR)
+                        .setCode(IssueType.VALUE)
+                        .setDiagnostics(messages.getMessage("validation.bundle.PatientIdsNotIdentical", new Object[]{id}))
+                        .addExpression(resourceType + ".entry[].subject.identifier.value")));
+    }
+
+    private void throwIdentifierRequired(ResourceType resourceType) {
+        throw new UnprocessableEntityException(fhirContext, new OperationOutcome()
+                .addIssue(new OperationOutcomeIssueComponent()
+                        .setSeverity(IssueSeverity.ERROR)
+                        .setCode(IssueType.VALUE)
+                        .setDiagnostics(messages.getMessage("validation.subject.identifierRequired"))
+                        .addExpression(resourceType + ".subject.identifier")));
+    }
+
+    private void throwEhrNotFound(Resource resource, String patientId) {
+        throw new UnprocessableEntityException(fhirContext, new OperationOutcome()
+                .addIssue(new OperationOutcomeIssueComponent()
+                        .setSeverity(IssueSeverity.ERROR)
+                        .setCode(IssueType.VALUE)
+                        .setDiagnostics(messages.getMessage("validation.subject.ehrIdNotFound", new Object[]{patientId}))
+                        .addExpression(resource.getResourceType() + ".subject.identifier")));
+    }
 
     @Override
     public void setMessageSource(@NonNull MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
     }
+
 }
