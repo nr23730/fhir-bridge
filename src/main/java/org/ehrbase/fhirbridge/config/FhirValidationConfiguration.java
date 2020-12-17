@@ -3,11 +3,13 @@ package org.ehrbase.fhirbridge.config;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.server.interceptor.RequestValidatingInterceptor;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.fhirbridge.FhirBridgeException;
 import org.ehrbase.fhirbridge.camel.processor.validator.ResourceProfileValidator;
 import org.ehrbase.fhirbridge.camel.processor.PatientIdProcessor;
+import org.ehrbase.fhirbridge.camel.processor.ResourceProfileValidator;
 import org.ehrbase.fhirbridge.camel.processor.validator.BundleProfileValidator;
 import org.ehrbase.fhirbridge.fhir.common.validation.TerminologyServerValidationSupport;
 import org.ehrbase.fhirbridge.fhir.common.validation.TerminologyValidationMode;
@@ -19,6 +21,7 @@ import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 import org.hl7.fhir.r4.model.StructureDefinition;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -40,9 +43,12 @@ public class FhirValidationConfiguration {
 
     private final ResourcePatternResolver resourceLoader;
 
-    public FhirValidationConfiguration(FhirValidationProperties properties, ResourcePatternResolver resourceLoader) {
+    private final MessageSource messageSource;
+
+    public FhirValidationConfiguration(FhirValidationProperties properties, ResourcePatternResolver resourceLoader, MessageSource messageSource) {
         this.properties = properties;
         this.resourceLoader = resourceLoader;
+        this.messageSource = messageSource;
     }
 
     @Bean
@@ -56,7 +62,7 @@ public class FhirValidationConfiguration {
     }
 
     @Bean
-    public PatientIdProcessor patientIdValidator(FhirContext fhirContext, OpenEhrClient openEhrClient) {
+    public PatientIdProcessor patientIdProcessor(FhirContext fhirContext, OpenEhrClient openEhrClient) {
         return new PatientIdProcessor(fhirContext, openEhrClient);
     }
 
@@ -101,7 +107,9 @@ public class FhirValidationConfiguration {
     }
 
     private TerminologyServerValidationSupport terminologyServerValidationSupport() {
-        String serverUrl = properties.getTerminology().getServerUrl();
-        return new TerminologyServerValidationSupport(fhirContext, fhirContext.newRestfulGenericClient(serverUrl));
+        IGenericClient client = fhirContext.newRestfulGenericClient(properties.getTerminology().getServerUrl());
+        TerminologyServerValidationSupport terminologyServerValidationSupport = new  TerminologyServerValidationSupport(fhirContext, client);
+        terminologyServerValidationSupport.setMessageSource(messageSource);
+        return terminologyServerValidationSupport;
     }
 }

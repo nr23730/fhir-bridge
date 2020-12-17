@@ -106,7 +106,7 @@ Force Tags              create
 	[Tags]             invalid
 
 	ehr.create new ehr    000_ehr_status.json
-	observation.create observation    create-with-default-profile.json
+	observation.create observation    create-observation-with-default-profile.json
     observation.validate response - 422 (default profile not supported)
 
 
@@ -117,7 +117,7 @@ Force Tags              create
 	[Tags]             invalid
 
 	ehr.create new ehr    000_ehr_status.json
-	observation.create observation    create-with-unsupported-profile.json
+	observation.create observation    create-observation-with-unsupported-profile.json
     observation.validate response - 422 (profile not supported)
 
 
@@ -195,4 +195,36 @@ Force Tags              create
 
 	ehr.create new ehr    000_ehr_status.json
 	observation.create patient in icu    create-patient-in-icu.json
+  	observation.validate response - 201
+
+
+016 Create Blood Gas Panel
+	[Documentation]    1. create new EHR Patient record
+	...                2. post example json to observation endpoint
+	...                3. validate the response status
+	[Tags]             blood-gas-panel    valid   not-ready
+
+	ehr.create new ehr    000_ehr_status.json
+	observation.create blood gas panel    create-blood-gas-panel.json
+
+
+017 Create Oxygen Saturation in Arterial Blood
+	[Documentation]    1. create new EHR Patient record
+	...                2. post example json to observation endpoint
+	...                3. validate the response status
+	[Tags]             oxygen-saturation   valid    not-ready
+
+	ehr.create new ehr    000_ehr_status.json
+	observation.create oxygen saturation    create-oxygen-saturation.json
+  	observation.validate response - 201
+
+
+018 Create History of Travel
+	[Documentation]    1. create new EHR Patient record
+	...                2. post example json to observation endpoint
+	...                3. validate the response status
+	[Tags]             history-of-travel   valid    not-ready
+
+	ehr.create new ehr    000_ehr_status.json
+	observation.create history of travel    create-history-of-travel.json
   	observation.validate response - 201

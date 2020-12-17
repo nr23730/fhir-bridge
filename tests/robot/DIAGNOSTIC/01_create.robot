@@ -38,32 +38,42 @@ Force Tags              create
     [Tags]              diagnostic-report    valid
 
     ehr.create new ehr    000_ehr_status.json
-    diagnostic.create diagnostic report    create.json 
+    diagnostic.create diagnostic report    create-diagnosticReport.json 
     diagnostic.validate response - 201
 
 
 002 Create Diagnostic Report w/o Observation
     [Documentation]     Trigger endpoint using invalid payload.
-    [Tags]              invalidvalid
+    [Tags]              diagnostic-report    invalid
 
     ehr.create new ehr    000_ehr_status.json
-    diagnostic.create diagnostic report    create-without-observation.json 
+    diagnostic.create diagnostic report    create-diagnosticReport-without-observation.json 
     diagnostic.validate response - 422 (missing observation)
 
 
 003 Create Diagnostic Report Using Default Profile
     [Documentation]     Trigger endpoint using invalid payload.
-    [Tags]              invalid
+    [Tags]              diagnostic-report    invalid
 
     ehr.create new ehr    000_ehr_status.json
-    diagnostic.create diagnostic report    create-with-default-profile.json 
+    diagnostic.create diagnostic report    create-diagnosticReport-with-default-profile.json 
     diagnostic.validate response - 422 (profile not supported)
 
 
 004 Create Diagnostic Report Using Unsupported Profile
     [Documentation]     Trigger endpoint using invalid payload.
-    [Tags]              invalid
+    [Tags]              diagnostic-report    invalid
 
     ehr.create new ehr    000_ehr_status.json
-    diagnostic.create diagnostic report    create-hls-genetics-result.json 
+    diagnostic.create diagnostic report    create-diagnosticReport-hls-genetics-result.json 
     diagnostic.validate response - 422 (profile not supported)
+
+
+005 Create Diagnostic Report Radiology
+    [Documentation]     1. create EHR
+    ...                 2. create diagnosticreport radiology
+    [Tags]              diagnostic-report    radiology    valid   not-ready
+
+    ehr.create new ehr    000_ehr_status.json
+    diagnostic.create diagnostic report radiology    create-radiology.json 
+    diagnostic.validate response - 201

@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 
 public abstract class AbstractSetupIT {
@@ -35,14 +36,15 @@ public abstract class AbstractSetupIT {
 
     static String PATIENT_ID;
 
-    protected final FhirContext context = FhirContext.forR4();
+    protected final FhirContext context;
 
-    IGenericClient client = context.newRestfulGenericClient("http://localhost:8888/fhir-bridge/fhir/");
+    protected final IGenericClient client;
 
-    //protected final IGenericClient client = context.newRestfulGenericClient("http://localhost:8888/fhir-bridge/fhir/");
-
-    @Autowired
-    ResourceLoader resourceLoader;
+    public AbstractSetupIT() {
+        context = FhirContext.forR4();
+        context.getRestfulClientFactory().setSocketTimeout(60 * 1000);
+        client = context.newRestfulGenericClient("http://localhost:8888/fhir-bridge/fhir/");
+    }
 
     @BeforeAll
     static void setup() throws URISyntaxException {

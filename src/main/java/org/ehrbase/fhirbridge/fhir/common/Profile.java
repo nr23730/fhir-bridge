@@ -6,6 +6,7 @@ import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.Bundle;
 
@@ -67,7 +68,11 @@ public enum Profile {
 
     // Procedure Profiles
 
-    PROCEDURE(Procedure.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure");
+    PROCEDURE(Procedure.class, "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure"),
+
+    // QuestionnaireResponse Profiles
+
+    DEFAULT_QUESTIONNAIRE_RESPONSE(QuestionnaireResponse.class, null);
 
     private final Class<? extends Resource> resourceType;
 

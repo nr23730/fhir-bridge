@@ -20,6 +20,7 @@ import org.hl7.fhir.r4.model.OperationOutcome.IssueType;
 import org.hl7.fhir.r4.model.OperationOutcome.OperationOutcomeIssueComponent;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.springframework.context.MessageSource;
@@ -94,6 +95,9 @@ public class PatientIdProcessor implements Processor, MessageSourceAware {
                 break;
             case Procedure:
                 patientId = ((Procedure) resource).getSubject().getIdentifier().getValue();
+                break;
+            case QuestionnaireResponse:
+                patientId = ((QuestionnaireResponse) resource).getSubject().getIdentifier().getValue();
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported resource [" + resourceType + "]");

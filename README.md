@@ -1,4 +1,4 @@
-# FHIR Bridge [![CircleCI Status](https://circleci.com/gh/ehrbase/fhir-bridge-poc.svg?style=shield)](https://circleci.com/gh/ehrbase/fhir-bridge-poc)
+# FHIR Bridge [![CircleCI Status](https://circleci.com/gh/ehrbase/fhir-bridge.svg?style=shield)](https://circleci.com/gh/ehrbase/fhir-bridge)
 
 FHIR Bridge is an official component of [EHRbase](https://ehrbase.org/).
 The purpose of the application is to act as a broker between an HL7 FHIR client and an openEHR server.
@@ -81,6 +81,7 @@ $ docker-compose -f docker-compose-full.yml up
 | `spring.datasource.password`                               |                                                  | Login password of the database.                             |
 | `spring.datasource.url`                                    |                                                  | JDBC URL of the database.                                   |
 | `spring.datasource.username`                               |                                                  | Login username of the database.                             |
+| `spring.jpa.properties.hibernate.dialect`                  | `org.hibernate.dialect.H2Dialect`                | Tells Hibernate to generate the appropriate SQL statements. |
 | `spring.jpa.properties.hibernate.search.default.indexBase` | `${java.io.tmpdir}/fhir-bridge-poc/indexes`      | Default base directory for the indexes.                     |
 | `server.port`                                              | `8888`                                           | Server HTTP port.                                           |
 | `server.servlet.context-path`                              | `/fhir-bridge-poc`                               | Context path of the application.                            |
