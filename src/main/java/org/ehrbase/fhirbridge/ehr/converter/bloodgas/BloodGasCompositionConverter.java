@@ -22,7 +22,6 @@ public class BloodGasCompositionConverter implements CompositionConverter<Befund
         BloodGasPanel bloodGasPanel = new BloodGasPanel(bundle);
         BlutgasAnalyseConverter blutgasAnalyseMapper = new BlutgasAnalyseConverter();
         BefundDerBlutgasanalyseComposition befundDerBlutgasanalyseComposition = blutgasAnalyseMapper.convert(bloodGasPanel);
-        System.out.println("AAAA"+befundDerBlutgasanalyseComposition.getLocation());
         return befundDerBlutgasanalyseComposition;
     }
 }

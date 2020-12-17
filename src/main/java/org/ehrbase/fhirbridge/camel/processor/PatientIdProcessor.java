@@ -66,7 +66,7 @@ public class PatientIdProcessor implements Processor, MessageSourceAware {
         Resource resource = exchange.getIn().getBody(Resource.class);
         if (resource == null) {
             resource = ((SupportedBundle) exchange.getIn().getHeader("Bundle")).getOriginalBundle();
-            exchange.getIn().setBody(resource);
+           //FIXME   exchange.getIn().setBody(resource);
         }
         return resource;
     }

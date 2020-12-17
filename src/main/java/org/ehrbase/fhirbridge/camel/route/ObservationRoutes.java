@@ -40,19 +40,20 @@ public class ObservationRoutes extends RouteBuilder {
     public void configure() {
         // @formatter:off
         from("fhir-create-observation:fhirConsumer?fhirContext=#fhirContext")
-            .onCompletion()
+                .onCompletion()
                 .process("auditCreateResourceProcessor")
-            .end()
-            .onException(Exception.class)
+                .end()
+                .onException(Exception.class)
                 .process(defaultExceptionHandler)
-            .end()
-            .process(requestValidator)
-            .bean(observationDao, "create(${body}, ${null}, ${header.FhirRequestDetails})")
-            .setHeader(FhirBridgeConstants.METHOD_OUTCOME, body())
-            .setBody(simple("${body.resource}"))
-            .process(patientIdProcessor)
-            .setHeader(CompositionConstants.COMPOSITION_CONVERTER, method(compositionConverterResolver, "resolve(${header.CamelFhirBridgeProfile})"))
-            .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity");
+                .end()
+                .process(requestValidator)
+                .bean(observationDao, "create(${body}, ${null}, ${header.FhirRequestDetails})")
+                .setHeader(FhirBridgeConstants.METHOD_OUTCOME, body())
+                .setBody(simple("${body.resource}"))
+                .process(patientIdProcessor)
+                .setHeader(CompositionConstants.COMPOSITION_CONVERTER, method(compositionConverterResolver, "resolve(${header.CamelFhirBridgeProfile})"))
+                .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity")
+                .setBody(header(FhirBridgeConstants.METHOD_OUTCOME));
         // @formatter:on
     }
 }

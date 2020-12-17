@@ -13,6 +13,7 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.springframework.stereotype.Component;
 
 @Component
+
 public class BundleRoutes extends RouteBuilder {
 
     private final IFhirResourceDao<Bundle> bundleDao;
@@ -49,13 +50,15 @@ public class BundleRoutes extends RouteBuilder {
                 .process(defaultExceptionHandler)
                 .end()
                 .process(requestValidator)
+                .bean(bundleDao, "create(${body}, ${null}, ${header.FhirRequestDetails})")
                 .setBody(simple("${body.resource}"))
-                .process(patientIdProcessor)
                 .setHeader(FhirBridgeConstants.METHOD_OUTCOME, body())
+                .process(patientIdProcessor)
                 .setHeader(CompositionConstants.COMPOSITION_CONVERTER, method(compositionConverterResolver, "resolve(${header.CamelFhirBridgeProfile})"))
                 .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity")
                 //.to("ehr-composition:compositionProducer?operation=mergeCompositionEntity&compositionConverter=#bloodGasCompositionConverter")
-                .setBody(header("Bundle"));
+                .setBody(header(FhirBridgeConstants.METHOD_OUTCOME));
+
         // @formatter:on
     }
 
