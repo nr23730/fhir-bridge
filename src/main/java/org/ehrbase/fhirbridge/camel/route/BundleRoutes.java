@@ -42,13 +42,15 @@ public class BundleRoutes extends RouteBuilder {
     public void configure() {
         // @formatter:off
         from("fhir-create-bundle:fhirConsumer?fhirContext=#fhirContext")
+                .onCompletion()
+                .process("auditCreateResourceProcessor")
+                .end()
                 .onException(Exception.class)
                 .process(defaultExceptionHandler)
                 .end()
                 .process(requestValidator)
                 .setBody(simple("${body.resource}"))
                 .process(patientIdProcessor)
-
                 .setHeader(FhirBridgeConstants.METHOD_OUTCOME, body())
                 .setHeader(CompositionConstants.COMPOSITION_CONVERTER, method(compositionConverterResolver, "resolve(${header.CamelFhirBridgeProfile})"))
                 .to("ehr-composition:compositionProducer?operation=mergeCompositionEntity")
