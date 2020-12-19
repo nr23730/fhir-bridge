@@ -17,7 +17,7 @@
         <skipITs>true</skipITs>
         <commandLineArguments/>
         <!-- Plugins -->
-        <!-- <checkstyle.version>3.1.1</checkstyle.version> -->
+        <checkstyle.version>3.1.1</checkstyle.version>
         <git-code-format-maven-plugin.version>3.0</git-code-format-maven-plugin.version>
         <failsafe.version>2.22.2</failsafe.version>
         <surefire.version>2.22.2</surefire.version>
@@ -66,8 +66,8 @@
 
     <build>
         <plugins>
-            <!-- COMMENT: removing this plugin in favour of Google-Java-Format. See next plugin below. -->
-            <!-- <plugin>
+            <!-- TODO: Clarify with @Renaud if it makes sense to keep this plugin along side with git-code-format-maven-plugin -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
@@ -85,7 +85,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <!-- https://github.com/google/google-java-format -->
                 <!-- https://github.com/Cosium/git-code-format-maven-plugin -->
