@@ -100,8 +100,8 @@ public class CoronavirusNachweisTestCompositionConverter
             .getCoding()
             .get(0)
             .getDisplay(); // FIXME: the code and value should be assigned to the pathogen name node
-                           // in the Compo, but the template binds just one specific value there
-                           // (hardcoded)
+    // in the Compo, but the template binds just one specific value there
+    // (hardcoded)
     String fhirCode = observation.getCode().getCoding().get(0).getCode();
     String fhirTerminology = observation.getCode().getCoding().get(0).getSystem();
 
@@ -117,11 +117,11 @@ public class CoronavirusNachweisTestCompositionConverter
     boolean pathogenDetection = positiveResultLoincCodes.contains(fhirCode);
     evaluation.setErregernachweisValue(
         pathogenDetection); // FIXME: this needs to come from positive or negative result code from
-                            // FHIR, I didn't validate the list of positive result codes.
+    // FHIR, I didn't validate the list of positive result codes.
 
     evaluation.setErregernachweisInDerKlinikValue(
         false); // FIXME: FHIR don't have enough data to know if the pathogen was detected in the
-                // clinic.
+    // clinic.
 
     // FIXME: Can't map with the code from FHIR since the code in the openEHR template is fixed
     ErregernameDefiningcode code =

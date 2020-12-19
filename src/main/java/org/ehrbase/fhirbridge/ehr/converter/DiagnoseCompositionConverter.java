@@ -56,7 +56,7 @@ public class DiagnoseCompositionConverter
     // transforms atcodes in snomed codes
     switch (text) {
       case "at0049": // TODO: the enum classes need a method to create the Enum from the code value
-                     // to avoid hardcoding
+        // to avoid hardcoding
         text = "24484000";
         break;
       case "at0048":

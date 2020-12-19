@@ -49,7 +49,7 @@ public class BodyWeightCompositionConverter
           observation
               .getValueQuantity()
               .getCode()); // note that the textual value that openEHR template expects as unit is
-                           // stored in code for this entity
+      // stored in code for this entity
       korpergewichtObservation.setTimeValue(effectiveDateTime);
       korpergewichtObservation.setLanguage(
           Language.DE); // FIXME: we need to grab the language from the template

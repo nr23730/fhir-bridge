@@ -57,10 +57,8 @@ public class FiO2CompositionConverter
       inspiratorischeSauerstofffraktion.setNumerator(
           observation.getValueQuantity().getValue().doubleValue());
       inspiratorischeSauerstofffraktion.setDenominator(100.0);
-      inspiratorischeSauerstofffraktion.setType(
-          (long)
-              2); // 2=percent
-                  // (https://specifications.openehr.org/releases/RM/latest/data_types.html#_proportion_kind_class)
+      inspiratorischeSauerstofffraktion.setType((long) 2); // 2=percent
+      // (https://specifications.openehr.org/releases/RM/latest/data_types.html#_proportion_kind_class)
       eingeatmeterSauerstoff.setInspiratorischeSauerstofffraktion(
           inspiratorischeSauerstofffraktion);
 

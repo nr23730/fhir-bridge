@@ -49,7 +49,7 @@ public class HeartRateCompositionConverter
           observation
               .getValueQuantity()
               .getCode()); // note that the textual value that openEHR template expects as unit is
-                           // stored in code for this entity
+      // stored in code for this entity
       herzfrequenzObservation.setTimeValue(effectiveDateTime);
       herzfrequenzObservation.setLanguage(
           Language.DE); // FIXME: we need to grab the language from the template
